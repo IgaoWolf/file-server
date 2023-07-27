@@ -12,28 +12,26 @@ PHP: O PHP é necessário para executar o código do webservice. Certifique-se d
 
 Instalação
 Faça o download dos arquivos do webservice:
-bash
-Copy code
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+
+git clone https://github.com/IgaoWolf/file-server.git
+
 Mova os arquivos upload.php, download.php e arquivos.php para o diretório do seu servidor web. Por exemplo, se estiver utilizando o Apache2 no Ubuntu, o diretório padrão é "/var/www/html/":
-bash
-Copy code
+
 sudo cp upload.php download.php arquivos.php /var/www/html/
+
 Certifique-se de que as permissões adequadas estejam definidas para os arquivos:
-less
-Copy code
+
 sudo chown www-data:www-data /var/www/html/upload.php /var/www/html/download.php /var/www/html/arquivos.php
 sudo chmod 644 /var/www/html/upload.php /var/www/html/download.php /var/www/html/arquivos.php
+
 Reinicie o servidor Apache2 para aplicar as alterações:
-Copy code
+
 sudo service apache2 restart
+
 Configuração
 Antes de utilizar o serviço de File Server, é necessário configurar algumas variáveis nos arquivos upload.php, download.php e arquivos.php. Abra os arquivos e localize as seguintes linhas:
 
 upload.php:
-
-php
-Copy code
 // Usuário e senha permitidos para o upload
 $allowedUser = 'XXX';
 $allowedPassword = 'XXX';
@@ -43,7 +41,6 @@ $uploadDirectory = '<DIRECTORY>';
 download.php:
 
 php
-Copy code
 // Usuário e senha para autenticação
 $validUser = 'XXXX';
 $validPassword = 'XXXX';
@@ -52,13 +49,12 @@ $validPassword = 'XXXX';
 $baseDirectory = '<DIRECTORY>';
 arquivos.php:
 
-php
-Copy code
 $baseDirectory = '<CAMINHO DO DIRETORIO>';
 Substitua 'XXX' pelos valores desejados para a autenticação básica. Defina um nome de usuário e uma senha seguros. Além disso, atualize '<DIRECTORY>' e '<CAMINHO DO DIRETORIO>' com o caminho absoluto do diretório no servidor onde deseja armazenar e buscar os arquivos.
 
 Uso
 Acesse o webservice através de um navegador ou um cliente HTTP (como curl).
+
 Quando você acessar o endpoint /upload.php, será solicitado a inserir as credenciais de autenticação. Insira o nome de usuário e senha configurados anteriormente.
 Se as credenciais forem corretas, você será redirecionado para a página de upload.
 Selecione um ou mais arquivos para fazer o upload e clique em "Enviar Arquivos". Os arquivos serão armazenados no diretório especificado na configuração.
