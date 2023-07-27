@@ -3,6 +3,7 @@ $baseDirectory = '<CAMINHO DO DIRETORIO>';
 
 function listarArquivos($diretorio) {
     // Verifica se o diretório informado está dentro do escopo permitido
+    // Checks if the specified directory is within the allowed scope
     if (strpos($diretorio, $GLOBALS['baseDirectory']) !== 0) {
         echo "O diretório $diretorio não é permitido.";
         return;
@@ -18,11 +19,13 @@ function listarArquivos($diretorio) {
                 $caminhoItemCompleto = realpath($diretorio . '/' . $item);
 
                 // Verifica se o caminho completo está dentro do escopo permitido
+                // Checks if the full path is within the allowed scope
                 if (strpos($caminhoItemCompleto, $GLOBALS['baseDirectory']) !== 0) {
                     continue;
                 }
 
                 // Se não houver barras no caminho, exibe o item
+                // If there are no slashes in the path, display the item
                 if (strpos($item, '/') === false) {
                     if (is_dir($caminhoItemCompleto)) {
                         // Exibe o link para a pasta
@@ -33,6 +36,7 @@ function listarArquivos($diretorio) {
                         $nome = pathinfo($caminhoItemCompleto, PATHINFO_FILENAME);
 
                         // Exibe o link para o arquivo, apontando para o download.php
+                        // Displays the link to the file, pointing to download.php
                         $downloadLink = "download.php?file=" . urlencode($item);
                         echo "<li><a href='$downloadLink'>$item</a></li>";
                     }
@@ -68,9 +72,11 @@ if (isset($_GET['dir'])) {
     $pastaSelecionada = $_GET['dir'];
 
     // Limpa o valor do parâmetro para evitar possíveis ataques
+    // Clears the parameter value to avoid possible attacks
     $pastaSelecionada = realpath($pastaSelecionada);
 
     // Verifica se o diretório selecionado está dentro do escopo permitido
+    // Checks if the selected directory is within the allowed scope
     if (is_dir($pastaSelecionada) && strpos($pastaSelecionada, $baseDirectory) === 0) {
         echo "<h1>Lista de Arquivos e Pastas para Download</h1>";
 
