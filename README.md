@@ -40,7 +40,6 @@ $allowedPassword = 'XXX';
 $uploadDirectory = '<DIRECTORY>';
 download.php:
 
-php
 // Usuário e senha para autenticação
 $validUser = 'XXXX';
 $validPassword = 'XXXX';
