@@ -1,71 +1,40 @@
 README
 
-File Server Webservice
+Integração com o servidor usando cURL (Apache2) - WebFileServer
 
-O File Server Webservice é um serviço desenvolvido em PHP que permite o armazenamento, download e listagem de arquivos em um servidor web configurado com o Apache2. Este serviço implementa autenticação básica para garantir que apenas usuários autorizados possam acessar e baixar os arquivos.
+Este repositório fornece uma solução simples para a integração com o servidor servidor linux utilizando montagem NFS, para ser usado como WebFileServer da  Neste guia, você aprenderá como utilizar cURL para interagir com os arquivos de delete.php, move.php e upload.php, que são responsáveis por excluir, mover e enviar arquivos, respectivamente. Lembre-se de que os nomes de pastas, arquivos e endereços IP mencionados são exemplos e devem ser substituídos pelos seus próprios.
 
 Requisitos
-Antes de prosseguir com a instalação e configuração do File Server Webservice, certifique-se de que o seguinte esteja instalado no seu servidor:
 
-Apache2: O servidor web Apache2 deve estar instalado e configurado corretamente no servidor.
-PHP: O PHP é necessário para executar o código do webservice. Certifique-se de ter o PHP instalado e configurado com as extensões necessárias.
+cURL instalado no seu sistema. Geralmente, cURL já está disponível na maioria das distribuições Linux e macOS. Para Windows, você pode instalá-lo facilmente seguindo as instruções no site oficial do cURL (https://curl.se/windows/).
+Uso do cURL para interagir com o servidor WebFileServer
 
-Instalação
-Faça o download dos arquivos do webservice:
+Excluir Arquivos (delete.php)
+Para excluir um arquivo específico no servidor, utilize o seguinte comando cURL:
 
-git clone https://github.com/IgaoWolf/file-server.git
+curl -X POST -F "caminho_arquivo=<caminho-do-arquivo-a-excluir>" <URL-do-servidor>/delete.php
 
-Mova os arquivos upload.php, download.php e arquivos.php para o diretório do seu servidor web. Por exemplo, se estiver utilizando o Apache2 no Ubuntu, o diretório padrão é "/var/www/html/":
+Substitua <caminho-do-arquivo-a-excluir> pelo caminho completo do arquivo que você deseja excluir. Por exemplo, se quiser excluir o arquivo "exemplo.txt" na pasta "arquivos/processados", você deve utilizar:
 
-sudo cp upload.php download.php arquivos.php /var/www/html/
+curl -X POST -F "caminho_arquivo=arquivos/processados/exemplo.txt" <URL-do-servidor>/delete.php
 
-Certifique-se de que as permissões adequadas estejam definidas para os arquivos:
+Mover Arquivos (move.php)
+Para mover um arquivo de uma pasta para outra no servidor, utilize o seguinte comando cURL:
 
-sudo chown www-data:www-data /var/www/html/upload.php /var/www/html/download.php /var/www/html/arquivos.php
-sudo chmod 644 /var/www/html/upload.php /var/www/html/download.php /var/www/html/arquivos.php
+curl -X POST -F "origem=<caminho-da-pasta-de-origem>" -F "destino=<caminho-da-pasta-de-destino>" <URL-do-servidor>/move.php
 
-Reinicie o servidor Apache2 para aplicar as alterações:
+Substitua <caminho-da-pasta-de-origem> pelo caminho completo da pasta de origem e <caminho-da-pasta-de-destino> pelo caminho completo da pasta de destino. Por exemplo, se você deseja mover o arquivo "documento.txt" da pasta "arquivos/envio" para a pasta "arquivos/processados", utilize:
 
-sudo service apache2 restart
+curl -X POST -F "origem=arquivos/envio/documento.txt" -F "destino=arquivos/processados" <URL-do-servidor>/move.php
 
-Configuração
-Antes de utilizar o serviço de File Server, é necessário configurar algumas variáveis nos arquivos upload.php, download.php e arquivos.php. Abra os arquivos e localize as seguintes linhas:
+Enviar Arquivos (upload.php)
+Para enviar um arquivo para o servidor, utilize o seguinte comando cURL:
 
-upload.php:
-// Usuário e senha permitidos para o upload
-$allowedUser = 'XXX';
-$allowedPassword = 'XXX';
+curl -X POST -F "arquivo=@<caminho-do-arquivo-local>" -F "pasta_destino=<caminho-da-pasta-de-destino-no-servidor>" <URL-do-servidor>/upload.php
 
-// Diretório de destino para o upload
-$uploadDirectory = '<DIRECTORY>';
-download.php:
+Substitua <caminho-do-arquivo-local> pelo caminho completo do arquivo que você deseja enviar a partir do seu sistema local e <caminho-da-pasta-de-destino-no-servidor> pelo caminho completo da pasta de destino no servidor. Por exemplo, para enviar o arquivo "relatorio.pdf" da sua área de trabalho para a pasta "arquivos/envio" no servidor, utilize:
 
-// Usuário e senha para autenticação
-$validUser = 'XXXX';
-$validPassword = 'XXXX';
+curl -X POST -F "arquivo=@/caminho/da/sua/area-de-trabalho/relatorio.pdf" -F "pasta_destino=arquivos/envio" <URL-do-servidor>/upload.php
 
-// Diretório base onde os arquivos estão localizados
-$baseDirectory = '<DIRECTORY>';
-arquivos.php:
-
-$baseDirectory = '<CAMINHO DO DIRETORIO>';
-Substitua 'XXX' pelos valores desejados para a autenticação básica. Defina um nome de usuário e uma senha seguros. Além disso, atualize '<DIRECTORY>' e '<CAMINHO DO DIRETORIO>' com o caminho absoluto do diretório no servidor onde deseja armazenar e buscar os arquivos.
-
-Uso
-Acesse o webservice através de um navegador ou um cliente HTTP (como curl).
-
-Quando você acessar o endpoint /upload.php, será solicitado a inserir as credenciais de autenticação. Insira o nome de usuário e senha configurados anteriormente.
-Se as credenciais forem corretas, você será redirecionado para a página de upload.
-Selecione um ou mais arquivos para fazer o upload e clique em "Enviar Arquivos". Os arquivos serão armazenados no diretório especificado na configuração.
-Para fazer o download de um arquivo, acesse o endpoint /download.php e informe o parâmetro file na URL com o nome do arquivo desejado.
-O webservice verificará a autenticação e, se as credenciais estiverem corretas, o arquivo será enviado para download.
-O webservice também inclui o arquivo arquivos.php, que lista todos os arquivos armazenados no servidor dentro do escopo permitido. Para acessar essa lista, basta fazer uma requisição GET para o endpoint /arquivos.php. Novamente, a autenticação será necessária para acessar essa lista.
-
-Notas
-
-Certifique-se de implementar medidas adequadas de segurança, como autenticação e autorização, para proteger o acesso aos arquivos no servidor.
-Este é apenas um exemplo básico de um File Server Webservice e pode ser expandido e aprimorado para atender aos requisitos específicos do seu caso de uso.
-
-Lembre-se de manter seus arquivos de configuração e senhas seguros e não compartilhe-os publicamente no repositório.
-
-Se encontrar algum problema ou tiver alguma dúvida, sinta-se à vontade para abrir uma "issue" no repositório do projeto.
+Considerações Finais
+Lembre-se de que os comandos cURL descritos acima são apenas exemplos genéricos. Certifique-se de substituir os caminhos e informações relevantes pelos valores específicos do seu servidor e da sua configuração. Além disso, antes de realizar qualquer ação de exclusão ou movimentação de arquivos, tenha certeza de que você possui as permissões adequadas no servidor para executar essas operações.
